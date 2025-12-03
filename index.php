@@ -56,29 +56,22 @@ if (isset($_SESSION["validate_csv_session"])) {
 						</div>
 
 						<div class="d-grid gap-2">
-							<button type="submit" class="btn btn-primary btn-lg shadow-sm">
-								<span class="me-2"></span>送信する
-							</button>
+							<button type="submit" class="btn btn-primary btn-lg shadow-sm">送信する</button>
 						</div>
 					</form>
 
 					<hr class="my-5 opacity-25" />
 
 					<div class="text-center d-grid">
-						<p class="text-danger small fw-bold mb-2">
-							<span class="me-1"></span>管理用メニュー
-						</p>
+						<p class="text-danger small fw-bold mb-2">管理用メニュー</p>
 
 						<form action="truncate.php" method="post" onsubmit="return confirm('本当に初期化しますか？');">
 							<div class="d-grid">
-								<button type="submit" class="btn btn-outline-danger btn-sm">
-									<span class="me-1"></span>テーブルを初期化
-								</button>
+								<button type="submit" class="btn btn-outline-danger btn-sm">テーブルを初期化</button>
 							</div>
 						</form>
 
 						<button type="button" id="toggle-validation-btn" class="btn btn-outline-danger btn-sm mt-2" data-status="<?php print $validate_csv ? 'enabled' : 'disabled'; ?>">
-							<span class="me-1"></span>
 							<?php if ($validate_csv): ?>
 								データの検問を無効化
 							<?php else: ?>
@@ -112,7 +105,6 @@ if (isset($_SESSION["validate_csv_session"])) {
 						toggleButton.textContent = "データの検問を有効化";
 						toggleButton.dataset.status = "disabled";
 					}
-					toggleButton.insertAdjacentElement("afterbegin", '<span class="bi bi-trash3 me-1"></span>');
 				})
 				.catch(error => {
 					console.error("エラー: ", error);
