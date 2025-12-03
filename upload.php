@@ -8,6 +8,9 @@ $dbUser = "root";
 $dbPass = "";
 $tableName = "job_offers";
 
+// 重複時の動作（cancel: 重複行をスキップ, overwrite: 既存行を上書き）
+$duplicateAction = $_POST["duplicate_action"] ?? "cancel";
+
 if (!isset($_SESSION["validate_csv_session"])) {
 	$validate_csv = true;
 } else {
@@ -215,6 +218,8 @@ $validation_rules = [
 	],
 ];
 
+$jobOfferIdIndex = array_search("job_offer_id", $db_columns);
+
 function validate_csv_row($cols, $colsCnt, $db_columns, $check_list, $validator, $column_comments, &$errors)
 {
 	$rowHasError = false;
@@ -340,7 +345,12 @@ try {
 			continue;
 		}
 
-		$sql = "INSERT into job_offers (`" . implode("`,`", $db_columns) . "`) VALUES (" . implode(",", $cols_sql) . ")";
+		// 重複時の挙動
+		if ($duplicateAction === "overwrite") {
+			$sql = "REPLACE INTO job_offers (`" . implode("`,`", $db_columns) . "`) VALUES (" . implode(",", $cols_sql) . ")";
+		} else {
+			$sql = "INSERT IGNORE INTO job_offers (`" . implode("`,`", $db_columns) . "`) VALUES (" . implode(",", $cols_sql) . ")";
+		}
 
 		$db->exec($sql);
 	}
@@ -357,6 +367,7 @@ try {
 
 	$db->commit();
 	print "登録しました。";
+	print '<a class="btn btn-primary" href="./index.php" role="button">戻る</a>';
 } catch (Exception $e) {
 	$db->rollBack();
 	fclose($fp);

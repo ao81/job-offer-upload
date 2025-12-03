@@ -55,6 +55,25 @@ if (isset($_SESSION["validate_csv_session"])) {
 							<div class="form-text text-end">※.csv形式のみ</div>
 						</div>
 
+						<div class="mb-4">
+							<label class="form-label fw-semibold">重複データの扱い</label>
+							<div class="form-text mx-1 mt-0 mb-2 small">
+								同じ主キー（求人番号）が既に登録されている行があった場合の動作を選択してください。
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="radio" name="duplicate_action" id="duplicate_cancel" value="cancel" checked>
+								<label class="form-check-label" for="duplicate_cancel">
+									重複行はスキップ（既存データを残す）
+								</label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="radio" name="duplicate_action" id="duplicate_overwrite" value="overwrite">
+								<label class="form-check-label" for="duplicate_overwrite">
+									既存データを上書きする
+								</label>
+							</div>
+						</div>
+
 						<div class="d-grid gap-2">
 							<button type="submit" class="btn btn-primary btn-lg shadow-sm">送信する</button>
 						</div>
@@ -71,12 +90,14 @@ if (isset($_SESSION["validate_csv_session"])) {
 							</div>
 						</form>
 
-						<button type="button" id="toggle-validation-btn" class="btn btn-outline-danger btn-sm mt-2" data-status="<?php print $validate_csv ? 'enabled' : 'disabled'; ?>">
-							<?php if ($validate_csv): ?>
-								データの検問を無効化
-							<?php else: ?>
-								データの検問を有効化
-							<?php endif; ?>
+						<button type="button" id="toggle-validation-btn" class="btn btn-sm mt-2 <?= $validate_csv ? "btn-outline-success" : "btn-outline-danger" ?>" data-status="<?= $validate_csv ? 'enabled' : 'disabled'; ?>">
+							<div class="d-grid">
+								<?php if ($validate_csv): ?>
+									データの検問：有効
+								<?php else: ?>
+									データの検問：無効
+								<?php endif; ?>
+							</div>
 						</button>
 					</div>
 
@@ -99,11 +120,17 @@ if (isset($_SESSION["validate_csv_session"])) {
 				.then(res => res.json())
 				.then(data => {
 					if (data.validation_enabled) {
-						toggleButton.textContent = "データの検問を無効化";
+						toggleButton.textContent = "データの検問：有効";
 						toggleButton.dataset.status = "enabled";
+
+						toggleButton.classList.remove("btn-outline-danger");
+						toggleButton.classList.add("btn-outline-success");
 					} else {
-						toggleButton.textContent = "データの検問を有効化";
+						toggleButton.textContent = "データの検問：無効";
 						toggleButton.dataset.status = "disabled";
+
+						toggleButton.classList.remove("btn-outline-success");
+						toggleButton.classList.add("btn-outline-danger");
 					}
 				})
 				.catch(error => {
