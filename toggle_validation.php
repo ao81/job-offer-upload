@@ -13,5 +13,6 @@ $res = [
 ];
 
 header("Content-Type: application/json");
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 print json_encode($res);
 exit;
